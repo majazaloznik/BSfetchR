@@ -26,6 +26,10 @@ Imports:
     rvest,
     stringr,
     xml2,
-    SURSfetchR
+    SURSfetchR,
+    DBI,
+    RPostgres,
+    UMARaccessR
 Remotes:
-    majazaloznik/SURSfetchR
+    majazaloznik/SURSfetchR,
+    majazaloznik/UMARaccessR

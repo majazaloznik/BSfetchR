@@ -1,0 +1,24 @@
+test_that("prepare source table", {
+  dittodb::with_mock_db({
+    con <- make_connection()
+    expect_message(prepare_source_table(con = con))
+    con_test <- make_test_connection()
+    out <- prepare_source_table(con = con_test, schema = "test_platform")
+    expect_equal(nrow(out), 1)
+    expect_equal(ncol(out), 4)
+    expect_equal(names(out), c("id", "name", "name_long", "url"))
+  })
+})
+
+
+
+
+test_that("prepare category table", {
+  dittodb::with_mock_db({
+    con <- make_connection()
+    out <- prepare_category_table("i_36_6as", con = con)
+    expect_equal(nrow(out), 2)
+    expect_equal(ncol(out), 4)
+    expect_equal(names(out), c("id", "name", "parent_id", "source_id"))
+  })
+})
