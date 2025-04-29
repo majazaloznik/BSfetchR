@@ -126,3 +126,27 @@ prepare_category_table_table <- function(px_code, con, schema = "platform") {
     dplyr::mutate(table_id = !!tbl_id,
                   source_id = !!source_id)
 }
+
+
+#' Prepare table to insert into `table_dimensions` table
+#'
+#' Helper function that extracts the dimensions for each table and their "time" status.
+#' Returns table ready to insert into the `table_dimensions`table with the
+#' db_writing family of functions.
+#'
+#' @param px_code the original BS table code (e.g. i_36_6as)
+#' @param con connection to the database
+#' @param schema database schema, defaults to "platform"
+#' @return a dataframe with the `table_id`, `dimension_name`, `time` columns for
+#' each dimension of this table.
+#' @export
+#'
+prepare_table_dimensions_table <- function(px_code, con, schema = "platform") {
+  tbl_id <- UMARaccessR::sql_get_table_id_from_table_code(con, px_code, schema)
+  dim_list <- get_px_dim_levels(px_code, con, schema)
+  data.frame(table_id = tbl_id,
+             dimension = names(dim_list)) |>
+  dplyr::mutate(is_time = ifelse(grepl("Datum", dimension), TRUE, FALSE))
+}
+
+

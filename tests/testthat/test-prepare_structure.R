@@ -50,3 +50,17 @@ test_that("prepare category relationship table", {
   })
 })
 
+test_that("prepare table dinemsions table", {
+  dittodb::with_mock_db({
+    con_test <- make_test_connection()
+    out <- prepare_table_dimensions_table("F2_Q1S", con_test, "test_platform")
+    expect_equal(nrow(out), 6)
+    expect_equal(ncol(out), 3)
+    expect_equal(names(out), c("table_id", "dimension", "is_time"))
+    expect_equal(out$dimension[1], "Datum")
+    expect_equal(out$is_time[1], TRUE )
+    expect_equal(out$dimension[2], "SEKTOR")
+    expect_equal(out$is_time[2], FALSE )
+  })
+})
+

@@ -304,10 +304,14 @@ get_all_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo
                                              category_id)) %>%
     # fix px url cuz it's wrong
     dplyr::mutate(px_url = ifelse(!is.na(px_url),
-                                  paste("https://px.bsi.si/Resources/PX/Databases/serije_slo",
-                                        category_code, subcategory_code,
-                                        paste0(px_code, ".px"), sep = "/"),
-                                  NA_character_))
+                                  ifelse(is.na(subcategory_code),
+                                         paste("https://px.bsi.si/Resources/PX/Databases/serije_slo",
+                                               category_code,
+                                               paste0(px_code, ".px"), sep = "/"),
+                                         paste("https://px.bsi.si/Resources/PX/Databases/serije_slo",
+                                               category_code, subcategory_code,
+                                               paste0(px_code, ".px"), sep = "/")),
+                                         NA_character_))
 
   return(all_tables)
 }
