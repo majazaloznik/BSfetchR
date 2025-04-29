@@ -39,7 +39,8 @@ prepare_source_table <- function(con, schema = "platform") {
 prepare_table_table <- function(px_code, keep_vintage = FALSE, con, schema = "platform") {
   get_px_metadata(px_code, con, schema)  |>
     dplyr::select(-updated, -valuenotes, -units) |>
-    dplyr::mutate(keep_vintage = keep_vintage)
+    dplyr::mutate(code = px_code,
+                  keep_vintage = keep_vintage)
 }
 
 #' Prepare table to insert into `category` table
@@ -75,7 +76,10 @@ prepare_category_table <- function(px_code, con, schema = "platform") {
 #' table with the db_writing family of functions.
 #' \link[BS fetchR]{get_all_bsi_tables}
 #'
-#' @param code_no the matrix code (e.g. 2300123S)
+#' @param px_code the original BS table code (e.g. i_36_6as)
+#' @param con a connection to the database
+#' @param schema the schema to use for the connection, default is "platform"
+#'
 #' @return a dataframe with the `id`, `name`, `parent_id`, `source_id` for each relationship
 #' betweeh categories
 #' @export
@@ -91,4 +95,34 @@ prepare_category_relationship_table <- function(px_code, con, schema = "platform
     dplyr::arrange(parent_id) |>
     dplyr::select(-name) |>
     dplyr::mutate(source_id = !!source_id)
+}
+
+
+
+#' Prepare table to insert into `category_table` table
+#'
+#' Helper function that extracts the parent category for each table from the full
+#' hierarchy data.frame, and fills up the category_table table with the table ids and
+#' their categories (parents). A single table can have multiple parents - meaning
+#' it is member of several categories (usually no more than two tho). Returns table
+#' ready to insert into the `category_table`table with the db_writing family of functions.
+#'
+#' @param px_code the original BS table code (e.g. i_36_6as)
+#' @param con connection to the database
+#' @param schema database schema, defaults to "platform"
+#' \link[SURSfetchR]{get_full_structure}
+#' @return a dataframe with the `category_id` `table_id` and `source_id` columns for
+#' each table-category relationship.
+#' @export
+#'
+prepare_category_table_table <- function(px_code, con, schema = "platform") {
+  tbl_id <- UMARaccessR::sql_get_table_id_from_table_code(con, px_code, schema)
+  source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "BS", schema)
+
+  BSfetchR::full %>%
+    dplyr::filter(px_code == !!px_code) %>%
+    dplyr::select(category_id = id) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(table_id = !!tbl_id,
+                  source_id = !!source_id)
 }

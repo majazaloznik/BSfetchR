@@ -30,13 +30,13 @@ get_px_metadata <- function(px_code, con, schema = "platform") {
   url <- BSfetchR::full |>
     dplyr::filter(px_code == !!px_code) |>
     dplyr::pull(px_url)
-  data.frame(name = gsub('\"\n\"', "", unlist(l$DESCRIPTION)),
+  data.frame(name = gsub('\"\n\"', "", unlist(l$DESCRIPTION$value)),
              updated = as.POSIXct(l$LAST.UPDATED[[1]],format="%Y%m%d %H:%M",tz=Sys.timezone()),
              units = l$UNITS[[1]],
              notes = I(list(c(l$NOTE, l$NOTEX))),
              valuenotes =I(list(l$VALUENOTE))) |>
     dplyr::mutate(notes = jsonlite::toJSON(notes),
-                  source_id = source_id,
+                  source_id = !!source_id,
                   url = url)
 }
 

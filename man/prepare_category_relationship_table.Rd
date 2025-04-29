@@ -7,7 +7,11 @@
 prepare_category_relationship_table(px_code, con, schema = "platform")
 }
 \arguments{
-\item{code_no}{the matrix code (e.g. 2300123S)}
+\item{px_code}{the original BS table code (e.g. i_36_6as)}
+
+\item{con}{a connection to the database}
+
+\item{schema}{the schema to use for the connection, default is "platform"}
 }
 \value{
 a dataframe with the `id`, `name`, `parent_id`, `source_id` for each relationship
