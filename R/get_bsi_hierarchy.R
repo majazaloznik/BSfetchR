@@ -13,11 +13,11 @@
 extract_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo/") {
   # Fetch HTML content with proper encoding
   response <- httr::GET(base_url)
-  html_content <- httr::content(response, "text", encoding = "UTF-8")  |>
+  html_content <- httr::content(response, "text", encoding = "UTF-8")  %>%
     xml2::read_html()
 
   # Extract all root category nodes
-  root_nodes <- html_content |>
+  root_nodes <- html_content %>%
     rvest::html_nodes(".AspNet-TreeView-Root")
 
   # Initialize results dataframe
@@ -34,13 +34,13 @@ extract_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo
   # Process each root node to extract its structure
   for (root_node in root_nodes) {
     # Check if this is a direct link or a category with children
-    direct_link <- root_node |> rvest::html_node("a")
-    category_node <- root_node |> rvest::html_node(".AspNet-TreeView-ClickableNonLink")
+    direct_link <- root_node %>% rvest::html_node("a")
+    category_node <- root_node %>% rvest::html_node(".AspNet-TreeView-ClickableNonLink")
 
     if (!is.na(category_node)) {
       # This is a category with children
-      category_name <- category_node |>
-        rvest::html_text() |>
+      category_name <- category_node %>%
+        rvest::html_text() %>%
         trimws()
 
       # Add category to results
@@ -55,17 +55,17 @@ extract_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo
       ))
 
       # Get all child links
-      child_links <- root_node |>
+      child_links <- root_node %>%
         rvest::html_nodes("li.AspNet-TreeView-Leaf a")
 
       # Process each child link
       for (link in child_links) {
-        child_name <- link |>
-          rvest::html_node("span.tableofcontent_tablelistlink") |>
-          rvest::html_text() |>
+        child_name <- link %>%
+          rvest::html_node("span.tableofcontent_tablelistlink") %>%
+          rvest::html_text() %>%
           trimws()
 
-        child_url <- link |> rvest::html_attr("href")
+        child_url <- link %>% rvest::html_attr("href")
 
         # Add child to results
         top_level_items <- rbind(top_level_items, data.frame(
@@ -80,12 +80,12 @@ extract_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo
       }
     } else if (!is.na(direct_link)) {
       # This is a direct link (both category and table)
-      link_name <- direct_link |>
-        rvest::html_node("span.tableofcontent_tablelistlink") |>
-        rvest::html_text() |>
+      link_name <- direct_link %>%
+        rvest::html_node("span.tableofcontent_tablelistlink") %>%
+        rvest::html_text() %>%
         trimws()
 
-      link_url <- direct_link |> rvest::html_attr("href")
+      link_url <- direct_link %>% rvest::html_attr("href")
 
       # Add direct link to results
       top_level_items <- rbind(top_level_items, data.frame(
@@ -120,18 +120,18 @@ extract_second_level_tables <- function(url) {
 
   # Fetch HTML content with proper encoding
   response <- httr::GET(url)
-  html_content <- httr::content(response, "text", encoding = "UTF-8") |>
+  html_content <- httr::content(response, "text", encoding = "UTF-8") %>%
     xml2::read_html()
 
   # Extract parent category from breadcrumb
-  parent_name <- html_content |>
-    rvest::html_nodes(".breadcrumb_text_nolink") |>
-    rvest::html_text() |>
-    tail(1) |>
+  parent_name <- html_content %>%
+    rvest::html_nodes(".breadcrumb_text_nolink") %>%
+    rvest::html_text() %>%
+    tail(1) %>%
     trimws()
 
   # Extract table items from the page
-  table_items <- html_content |>
+  table_items <- html_content %>%
     rvest::html_nodes(".tablelist_li")
 
   # Initialize results dataframe
@@ -148,33 +148,33 @@ extract_second_level_tables <- function(url) {
   # Process each table item
   for (item in table_items) {
     # Extract table name
-    table_name_node <- item |>
+    table_name_node <- item %>%
       rvest::html_node(".tablelist_linkHeading")
 
     if (!is.na(table_name_node)) {
-      table_name <- table_name_node |>
-        rvest::html_text() |>
+      table_name <- table_name_node %>%
+        rvest::html_text() %>%
         trimws()
 
       # Extract select URL
-      select_url_node <- item |>
+      select_url_node <- item %>%
         rvest::html_node("a.tablelist_link[href*='select']")
 
       select_url <- if (!is.na(select_url_node)) {
-        select_url_node |>
-          rvest::html_attr("href") |>
+        select_url_node %>%
+          rvest::html_attr("href") %>%
           paste0("https://px.bsi.si", .)
       } else {
         NA_character_
       }
 
       # Extract px file URL
-      px_url_node <- item |>
+      px_url_node <- item %>%
         rvest::html_node("a.tablelist_link[href*='.px']")
 
       px_url <- if (!is.na(px_url_node)) {
-        px_url_node |>
-          rvest::html_attr("href") |>
+        px_url_node %>%
+          rvest::html_attr("href") %>%
           paste0("https://px.bsi.si", .)
 
       } else {
@@ -182,8 +182,8 @@ extract_second_level_tables <- function(url) {
       }
 
       # Extract modified date
-      modified_date <- item |>
-        rvest::html_text() |>
+      modified_date <- item %>%
+        rvest::html_text() %>%
         stringr::str_extract("Spremenjeno:\\s*(\\d{1,2}\\.\\d{1,2}\\.\\d{4})")
 
       # Add to results
@@ -266,9 +266,9 @@ get_all_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo
   }
 
   # Process categories and create IDs
-  all_tables <- all_tables |>
-    dplyr::mutate(full_url = dplyr::coalesce(full_url, select_url)) |>
-    dplyr::select(-select_url) |>
+  all_tables <- all_tables %>%
+    dplyr::mutate(full_url = dplyr::coalesce(full_url, select_url)) %>%
+    dplyr::select(-select_url) %>%
     dplyr::mutate(
       category_code = stringr::str_match(full_url, "serije_slo__(.*?)(?:__|/)")[,2],
       subcategory_code = stringr::str_match(full_url, ".*?__.*?__(.*?)/")[,2],
@@ -284,8 +284,8 @@ get_all_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo
                                                   ifelse(name == "Devizni te\u010daji tolarja 1991 - 2006, devizni trg v Sloveniji",
                                                          "90_devizni_tecaji",
                                                          category_code)))))
-    ) |>
-    dplyr::mutate(category_id = match(category_code, unique(category_code))) |>
+    ) %>%
+    dplyr::mutate(category_id = match(category_code, unique(category_code))) %>%
     dplyr::mutate(
       max_id1 = max(category_id, na.rm = TRUE),
       subcategory_id = dplyr::if_else(
@@ -294,14 +294,14 @@ get_all_bsi_tables <- function(base_url = "https://px.bsi.si/pxweb/sl/serije_slo
         match(subcategory_code, unique(na.omit(subcategory_code))) + max_id1 + 4,
         NA_integer_
       )
-    ) |>
-    dplyr::select(-max_id1) |>
+    ) %>%
+    dplyr::select(-max_id1) %>%
     dplyr::mutate(id = ifelse(is.na(subcategory_id),
                               category_id,
                               subcategory_id),
                   parent_id = dplyr::if_else(is.na(subcategory_id),
                                              0,
-                                             category_id)) |>
+                                             category_id)) %>%
     # fix px url cuz it's wrong
     dplyr::mutate(px_url = ifelse(!is.na(px_url),
                                   paste("https://px.bsi.si/Resources/PX/Databases/serije_slo",
