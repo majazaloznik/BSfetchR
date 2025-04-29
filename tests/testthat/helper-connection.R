@@ -1,6 +1,6 @@
 library(testthat)
 library(dittodb)
-
+library(mockery)
 make_connection <- function() {
   con <- DBI::dbConnect(RPostgres::Postgres(),
                         dbname = "platform",

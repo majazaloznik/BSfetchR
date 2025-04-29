@@ -7,3 +7,4 @@ full <- get_all_bsi_tables()
 usethis::use_data(full,
                   internal = FALSE,
                   overwrite = TRUE)
+

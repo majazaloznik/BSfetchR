@@ -9,10 +9,15 @@ test_that("prepare source table", {
     expect_equal(names(out), c("id", "name", "name_long", "url"))
   })
 })
-
-
-
-
+test_that("prepare table table", {
+  dittodb::with_mock_db({
+    con <- make_connection()
+    out <- prepare_table_table("i_36_6as", con = con)
+    expect_equal(nrow(out), 1)
+    expect_equal(ncol(out), 5)
+    expect_equal(names(out), c("name", "notes", "source_id", "url", "keep_vintage"))
+  })
+})
 test_that("prepare category table", {
   dittodb::with_mock_db({
     con <- make_connection()

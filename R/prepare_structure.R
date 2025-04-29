@@ -21,26 +21,44 @@ prepare_source_table <- function(con, schema = "platform") {
              message("BS already listed in the source table.")}
 }
 
-
+#' Prepare table to insert into `table` table
+#'
+#' This one is really straightforward, and slightly superfluous, since it just
+#' uses the \link[BSfetchR]{get_px_metadata} function and removes two columns.
+#' Returns table ready to insert into the `table` table with the db_writing family
+#' of functions.
+#'
+#' @param px_code the original BS code (e.g. i_36_6as)
+#' @param con a connection to the database
+#' @param schema the schema to use for the connection, default is "platform"
+#' @param keep_vintage boolean whether to keep vintages
+#'
+#' @return a dataframe with the `code`, `name`, `source_id`, `url`, and `notes` columns
+#' for this table.
+#' @export
+prepare_table_table <- function(px_code, keep_vintage = FALSE, con, schema = "platform") {
+  get_px_metadata(px_code, con, schema)  |>
+    dplyr::select(-updated, -valuenotes, -units) |>
+    dplyr::mutate(keep_vintage = keep_vintage)
+}
 
 #' Prepare table to insert into `category` table
 #'
 #' Helper function that extracts all the parent categories from the full
 #' hierarchy data.frame, and prepares the category table with field ids and
 #' their names. Returns table ready to insert into the `category` table with the db_writing family
-#' of functions. Hardcodes the source_id for BS, which is 5.
+#' of functions. Uses the full field hierarchy with parent_ids et al, output from
+#' \link[BS fetchR]{get_all_bsi_tables}.
 #'
 #' @param px_code the original BS code (e.g. i_36_6as)
-#' @param full full field hierarchy with parent_ids et al, output from
-#' \link[BS fetchR]{get_all_bsi_tables}
 #' @param con a connection to the database
 #' @param schema the schema to use for the connection, default is "platform"
 #' @return a dataframe with the `id`, `name`, `source_id` for each category that
 #' the table is a member of.
 #' @export
 #'
-prepare_category_table <- function(px_code, full = BSfetchR::full, con, schema = "platform") {
-  full <- full |>
+prepare_category_table <- function(px_code, con, schema = "platform") {
+  full <- BSfetchR::full |>
     dplyr::rename(matrix_name = px_code)
   tmp <- full |> dplyr::filter(!is.na(matrix_name))
   id_no <- unique(tmp$id[tmp$matrix_name == px_code])

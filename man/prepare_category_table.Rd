@@ -4,18 +4,10 @@
 \alias{prepare_category_table}
 \title{Prepare table to insert into `category` table}
 \usage{
-prepare_category_table(
-  px_code,
-  full = BSfetchR::full,
-  con,
-  schema = "platform"
-)
+prepare_category_table(px_code, con, schema = "platform")
 }
 \arguments{
 \item{px_code}{the original BS code (e.g. i_36_6as)}
-
-\item{full}{full field hierarchy with parent_ids et al, output from
-\link[BS fetchR]{get_all_bsi_tables}}
 
 \item{con}{a connection to the database}
 
@@ -29,5 +21,6 @@ the table is a member of.
 Helper function that extracts all the parent categories from the full
 hierarchy data.frame, and prepares the category table with field ids and
 their names. Returns table ready to insert into the `category` table with the db_writing family
-of functions. Hardcodes the source_id for BS, which is 5.
+of functions. Uses the full field hierarchy with parent_ids et al, output from
+\link[BS fetchR]{get_all_bsi_tables}.
 }

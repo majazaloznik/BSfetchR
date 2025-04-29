@@ -29,7 +29,10 @@ Imports:
     SURSfetchR,
     DBI,
     RPostgres,
-    UMARaccessR
+    UMARaccessR,
+    jsonlite,
+    pxR,
+    mockery
 Remotes:
     majazaloznik/SURSfetchR,
     majazaloznik/UMARaccessR
