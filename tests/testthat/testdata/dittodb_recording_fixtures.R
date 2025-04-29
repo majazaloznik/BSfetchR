@@ -2,11 +2,6 @@
 #
 source("tests/testthat/helper-connection.R")
 
-start_db_capturing()
-con <- make_connection()
-out <- prepare_category_table("i_36_6as", con = con)
-stop_db_capturing()
-
 
 start_db_capturing()
 con <- make_connection()
@@ -25,5 +20,16 @@ stop_db_capturing()
 
 start_db_capturing()
 con <- make_connection()
+out <- prepare_category_table("i_36_6as", con = con)
+stop_db_capturing()
+
+
+start_db_capturing()
+con <- make_connection()
 prepare_table_table("i_36_6as", con = con)
+stop_db_capturing()
+
+start_db_capturing()
+con <- make_connection()
+prepare_category_relationship_table("i_36_6as", con)
 stop_db_capturing()

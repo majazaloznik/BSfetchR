@@ -62,10 +62,33 @@ prepare_category_table <- function(px_code, con, schema = "platform") {
     dplyr::rename(matrix_name = px_code)
   tmp <- full |> dplyr::filter(!is.na(matrix_name))
   id_no <- unique(tmp$id[tmp$matrix_name == px_code])
-source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "BS", schema)
+  source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "BS", schema)
   SURSfetchR::get_row(id_no, full) |>
-    dplyr::mutate(source_id = source_id)
+    dplyr::mutate(source_id = !!source_id)
 }
 
-# prepare_category_table("i_36_6as", bsi_df)
-
+#' Prepare table to insert into `category_relationship` table
+#'
+#' Helper function that extracts the field hierarchy from the full
+#' hierarchy data.frame, and  prepares the category relationship table with field ids and
+#' their parents' id. Returns table ready to insert into the `category_relationship`
+#' table with the db_writing family of functions.
+#' \link[BS fetchR]{get_all_bsi_tables}
+#'
+#' @param code_no the matrix code (e.g. 2300123S)
+#' @return a dataframe with the `id`, `name`, `parent_id`, `source_id` for each relationship
+#' betweeh categories
+#' @export
+#'
+prepare_category_relationship_table <- function(px_code, con, schema = "platform") {
+  full <- BSfetchR::full |>
+    dplyr::rename(matrix_name = px_code)
+  tmp <- full |> dplyr::filter(!is.na(matrix_name))
+  id_no <- unique(tmp$id[tmp$matrix_name == px_code])
+  source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "BS", schema)
+  SURSfetchR::get_row(id_no, full) |>
+    dplyr::mutate(parent_id = as.numeric(parent_id)) |>
+    dplyr::arrange(parent_id) |>
+    dplyr::select(-name) |>
+    dplyr::mutate(source_id = !!source_id)
+}

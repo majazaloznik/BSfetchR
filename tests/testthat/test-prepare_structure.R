@@ -25,5 +25,17 @@ test_that("prepare category table", {
     expect_equal(nrow(out), 2)
     expect_equal(ncol(out), 4)
     expect_equal(names(out), c("id", "name", "parent_id", "source_id"))
+    expect_equal(out$source_id[1], 5)
+  })
+})
+
+test_that("prepare category relationship table", {
+  dittodb::with_mock_db({
+    con <- make_connection()
+    out <- prepare_category_relationship_table("i_36_6as", con)
+    expect_equal(nrow(out), 2)
+    expect_equal(ncol(out), 3)
+    expect_equal(names(out), c("id", "parent_id", "source_id"))
+    expect_equal(out$source_id[1], 5)
   })
 })
