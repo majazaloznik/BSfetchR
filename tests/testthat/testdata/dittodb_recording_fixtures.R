@@ -39,9 +39,26 @@ source("tests/testthat/helper-connection.R")
 # # UMARimportR::insert_new_table_table(con_test, table_table, schema = "test_platform")
 # prepare_category_table_table("i_36_6as", con_test, "test_platform")
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con_test <- make_test_connection()
+# prepare_table_dimensions_table("F2_Q1S", con_test, "test_platform")
+# stop_db_capturing()
+#
+#
+# start_db_capturing()
+# con_test <- make_test_connection()
+# out <- prepare_dimension_levels_table("I1_1S", con_test, "test_platform")
+# stop_db_capturing()
+#
+#
+# start_db_capturing()
+# con_test <- make_test_connection()
+# out <- prepare_series_table("I1_1S", con_test, "test_platform")
+# stop_db_capturing()
+
 
 start_db_capturing()
 con_test <- make_test_connection()
-prepare_table_dimensions_table("F2_Q1S", con_test, "test_platform")
+out <- prepare_series_levels_table("I1_1S", con_test, "test_platform")
 stop_db_capturing()
-

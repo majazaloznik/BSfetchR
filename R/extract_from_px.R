@@ -26,7 +26,6 @@ get_px_list <- function(px_code) {
 #' @export
 get_px_metadata <- function(px_code, con, schema = "platform") {
   l <- get_px_list(px_code)
-  source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "BS", schema)
   url <- BSfetchR::full |>
     dplyr::filter(px_code == !!px_code) |>
     dplyr::pull(px_url)
@@ -36,7 +35,6 @@ get_px_metadata <- function(px_code, con, schema = "platform") {
              notes = I(list(c(l$NOTE$value, l$NOTEX$value))),
              valuenotes =I(list(l$VALUENOTE$value))) |>
     dplyr::mutate(notes = jsonlite::toJSON(notes),
-                  source_id = !!source_id,
                   url = url)
 }
 
@@ -66,4 +64,20 @@ get_px_dim_levels <- function(px_code, con, schema = "platform") {
 get_px_data <- function(px_code, con, schema = "platform") {
   l <- get_px_list(px_code)
   l$DATA$value
+}
+
+#' Get interval ID from a PX file
+#'
+#' Extracts the interval ID (e.g., "M", "Q", "A") from a PX file based on its time value.
+#'
+#' @param px_code Character string identifying the PX file (e.g., "F2_A1S")
+#' @return A character string representing the interval ID ("M", "Q", "A", or NA)
+#' @export
+get_interval_id_from_px <- function(px_code){
+  l <- get_px_list(px_code)
+  time_value <- l$CODES$Datum[1]
+ interval_id <- ifelse(grepl("[0-9]{4}M[0-9]{2}", time_value), "M",
+                       ifelse(grepl("[0-9]{4}Q[0-9]{1}", time_value), "Q",
+                                     ifelse(grepl("[0-9]{4}", time_value), "A", NA)))
+  interval_id
 }

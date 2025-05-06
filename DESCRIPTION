@@ -28,11 +28,13 @@ Imports:
     xml2,
     SURSfetchR,
     DBI,
-    RPostgres,
     UMARaccessR,
     jsonlite,
     pxR,
-    mockery
+    purrr,
+    tibble,
+    tidyr,
+    RPostgres
 Remotes:
     majazaloznik/SURSfetchR,
     majazaloznik/UMARaccessR

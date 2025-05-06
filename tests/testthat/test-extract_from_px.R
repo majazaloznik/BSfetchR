@@ -13,23 +13,15 @@ test_that("prepare source table", {
 
 # Test for get_px_metadata
 test_that("get_px_metadata extracts metadata correctly", {
-  # Mock dependencies
-  dittodb::with_mock_db({
-    con <- make_connection()
-    # Call the function
-    result <- get_px_metadata("i_36_6as", con)
-
+    result <- get_px_metadata("i_36_6as")
     # Check result structure
     expect_s3_class(result, "data.frame")
-    expect_equal(ncol(result), 7)
+    expect_equal(ncol(result), 6)
     expect_equal(nrow(result), 1)
-
     # Check specific fields
     expect_equal(result$name, "Stanje mednarodnih nalo\u017eb BPM6 - mio EUR - letno")
     expect_s3_class(result$updated, "POSIXct")
     expect_equal(result$units, "mio EUR")
-    expect_equal(result$source_id, 5)
-  })
 })
 
 # Test for get_px_dim_levels
