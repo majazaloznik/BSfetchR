@@ -75,7 +75,7 @@ get_px_data <- function(px_code, con, schema = "platform") {
 #' @export
 get_interval_id_from_px <- function(px_code){
   l <- get_px_list(px_code)
-  time_value <- l$CODES$Datum[1]
+  time_value <- l$VALUES$Datum[1]
  interval_id <- ifelse(grepl("[0-9]{4}M[0-9]{2}", time_value), "M",
                        ifelse(grepl("[0-9]{4}Q[0-9]{1}", time_value), "Q",
                                      ifelse(grepl("[0-9]{4}", time_value), "A", NA)))

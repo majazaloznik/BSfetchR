@@ -3,9 +3,9 @@ test_that("prepare source table", {
     con <- make_connection()
     expect_message(prepare_source_table(con = con))
     con_test <- make_test_connection()
-
   })
 })
+
 test_that("prepare table table", {
   dittodb::with_mock_db({
     con <- make_connection()
@@ -69,8 +69,8 @@ test_that("prepare dimensions levels table", {
     con_test <- make_test_connection()
     out <- prepare_dimension_levels_table("I1_1S", con_test, "test_platform")
     expect_equal(nrow(out), 11)
-    expect_equal(ncol(out), 3)
-    expect_equal(names(out), c("level_text", "level_value", "tab_dim_id"))
+    expect_equal(ncol(out), 4)
+    expect_equal(names(out), c("dimension", "level_text", "level_value", "tab_dim_id"))
     expect_true(any(is.na(out)) == FALSE)
   })
 })

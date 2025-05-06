@@ -182,8 +182,7 @@ prepare_dimension_levels_table <- function(px_code, con, schema = "platform") {
         level_value = seq_along(l$VALUES[[dim_name]]) - 1 ) |>
         dplyr::filter(dimension_name != "Datum")}) |>
     dplyr::inner_join(dim_ids, by = c("dimension_name" = "dimension")) |>
-    dplyr::rename(tab_dim_id = id, dimension = dimension_name) |>
-    dplyr::select(-dimension)
+    dplyr::rename(tab_dim_id = id, dimension = dimension_name)
 }
 
 
