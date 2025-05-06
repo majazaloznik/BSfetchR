@@ -62,12 +62,15 @@ source("tests/testthat/helper-connection.R")
 # con_test <- make_test_connection()
 # out <- prepare_series_levels_table("I1_1S", con_test, "test_platform")
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con_test <- make_test_connection()
+# result <- BS_import_structure("F2_Q1S", con_test, schema = "test_platform")
+# stop_db_capturing()
+
 
 start_db_capturing()
 con_test <- make_test_connection()
-result <- BS_import_structure("F2_Q1S", con_test, schema = "test_platform")
+x <- prepare_vintage_table("I1_1S", con_test, schema = "test_platform")
+expect_true(all(names(x) == c("series_id", "published")))
 stop_db_capturing()
-
-UMARimportR::delete_table(con_test, 372, "test_platform")
-result <- BS_import_structure("F2_Q1S", con_test, schema = "test_platform", FALSE)
-
