@@ -22,7 +22,7 @@ get_px_list <- function(px_code) {
     dplyr::filter(px_code == !!px_code) |>
     dplyr::pull(px_url)
 
-  pxR::read.px(url, encoding = "utf-8")
+  fetch_px(url)
 }
 
 #' Get metadata for a PX file
