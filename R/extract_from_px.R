@@ -3,16 +3,10 @@
 #' @param url URL to PX file
 #' @return Parsed PX object or NULL on failure
 #' @export
-read_bsi_px <- function(url) {
-  # Set UTF-8 locale and ensure it's restored when function exits
-  restore <- UMARimportR::set_data_locale("UTF-8")
-  on.exit(restore())
-  # With proper locale, read the file
-  tryCatch({
-    pxR::read.px(url)
-  }, error = function(e) {
-    stop("Failed to read PX file (even with UTF-8 locale): ", e$message)
-  })
+fetch_px <- function(url) {
+     temp_file <- tempfile()
+     download.file(url, temp_file, mode = "wb")
+     pxR::read.px(temp_file, encoding = "UTF-16LE")
 }
 
 #' Get PX file information
