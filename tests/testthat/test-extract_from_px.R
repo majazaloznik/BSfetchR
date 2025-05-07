@@ -52,4 +52,64 @@ test_that("get_px_data returns data values", {
     })
 })
 
+# tests/testthat/test-set_data_locale.R
 
+test_that("set_data_locale changes locale and returns function to restore it", {
+  # Save original locale
+  original_locale <- Sys.getlocale("LC_CTYPE")
+
+  # Set to UTF-8
+  restore_fn <- UMARimportR::set_data_locale("UTF-8")
+
+  # Confirm locale changed
+  current_locale <- Sys.getlocale("LC_CTYPE")
+  expect_false(identical(current_locale, original_locale),
+               "Locale should change from original")
+
+  # Restore original
+  restore_fn()
+
+  # Verify restoration
+  expect_identical(Sys.getlocale("LC_CTYPE"), original_locale)
+})
+
+test_that("set_data_locale handles different locale categories", {
+  # Test with LC_TIME
+  original_time <- Sys.getlocale("LC_TIME")
+
+  # Set only LC_TIME to C
+  restore_time <- UMARimportR::set_data_locale("C", "LC_TIME")
+  expect_equal(Sys.getlocale("LC_TIME"), "C")
+
+  # Restore
+  restore_time()
+  expect_equal(Sys.getlocale("LC_TIME"), original_time)
+})
+
+# tests/testthat/test-read_bsi_px.R
+
+test_that("read_bsi_px successfully reads valid BSI PX URL", {
+  skip_if_offline()
+
+  # Use a known working BSI URL
+  url <- "https://px.bsi.si/Resources/PX/Databases/serije_slo/10_denar_mfi/60_terj_mfi/I1_5BBS.px"
+
+  # Should return a valid px object
+  result <- BSfetchR::read_bsi_px(url)
+
+  # Check that we got a valid object
+  expect_true(!is.null(result))
+  expect_true(is.list(result))
+  expect_true("HEADING" %in% names(result))
+  expect_true("DATA" %in% names(result))
+})
+
+test_that("read_bsi_px handles non-existent URLs appropriately", {
+  skip_if_offline()
+
+  # Use a URL that doesn't exist
+  url <- "https://px.bsi.si/Resources/PX/NonExistentFile.px"
+
+  # Should throw an error for non-existent URL
+  expect_error(BSfetchR::read_bsi_px(url))
+})
