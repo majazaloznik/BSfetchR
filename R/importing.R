@@ -67,3 +67,53 @@ BS_import_structure <- function(px_code, con, schema = "platform", all_levels = 
   message("Series levels insert: ", insert_results$series_levels$count, " rows")
   invisible(insert_results)
 }
+
+
+
+#' Insert data points from BS
+#'
+#' Function to prepare and insert BS data points. The function first prepares
+#' the required vintages and inserts them, then prepares the data points
+#' table and inserts it. The function returns the results invisibly.
+#'
+#' This is a BS specific function, which should be followed by the generic
+#' UMARimportR function to write the vintage hashes and clean up redundant
+#' vintages.
+#'
+#' @param px_code BS code name of the table
+#' @param con Database connection
+#' @param schema Schema name
+#'
+#' @return Insertion results (invisibly)
+#' @export
+BS_import_data_points <- function(px_code, con, schema = "platform") {
+  message("Importing data points from: ", px_code, " into schema ", schema)
+  # collect outputs from the functions into one result list
+  result <- list()
+  # Try to prepare SURS vintage table but catch any errors
+  vintage_result <- tryCatch(
+    expr = {list(
+      vintages = prepare_vintage_table(px_code, con, schema),
+      error = NULL)},
+    error = function(e) {
+      error_msg <- conditionMessage(e)
+      message("Note: ", error_msg)
+      return(list(
+        vintages = NULL,
+        error = error_msg))})
+  # Store error message if any
+  result$vintage_error <- vintage_result$error
+  # Only proceed with import if vintages were prepared successfully
+  if (!is.null(vintage_result$vintages)) {
+    # import vintages
+    result$vintages <- UMARimportR::insert_new_vintage(con, vintage_result$vintages, schema)
+    # Prepare data in SURS-specific way
+    prep_data <- prepare_bs_data_for_insert(px_code, con, schema)
+    # Insert the prepared data
+    result$data <- UMARimportR::insert_prepared_data_points(prep_data, con, schema)
+  } else {
+    message("Skipping import for ", px_code, " due to vintage preparation issue: ", vintage_result$error)
+  }
+  invisible(result)
+}
+

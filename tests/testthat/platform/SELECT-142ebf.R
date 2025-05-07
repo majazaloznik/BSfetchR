@@ -1,3 +1,4 @@
-structure(list(column_name = c("Valuta", "Frekvenca", "Postavke", 
-"Datum", "value", "interval_id")), class = "data.frame", row.names = c(NA, 
--6L))
+structure(list(column_name = c("SEKTOR", "TIP_POD", "VRSTA", 
+"FIN_INSTRUM", "Postavke", "Datum", "value", "time", "flag", 
+"interval_id")), class = "data.frame", row.names = c(NA, -10L
+))
