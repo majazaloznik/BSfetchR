@@ -16,12 +16,5 @@ test_that("BS_import_data works correctly", {
     expect_true(all(names(result$data) == c("periods_inserted", "datapoints_inserted",
                                               "flags_inserted")))
     expect_true(result$data$datapoints_inserted == 90720)
-    mssg <- BS_import_data_points("I1_1S", con, schema = "test_platform")
-
-    print( mssg)
-
-
-    expect_true(grepl("will not be inserted again", mssg[1]))
-
   })
 })

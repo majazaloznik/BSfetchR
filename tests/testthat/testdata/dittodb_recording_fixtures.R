@@ -89,3 +89,4 @@ con_test <- make_test_connection()
 result <- BS_import_structure("F2_Q1S", con_test, schema = "test_platform")
 x <- BS_import_data_points("F2_Q1S", con_test, schema = "test_platform")
 stop_db_capturing()
+
