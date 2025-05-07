@@ -4,7 +4,7 @@
 #' the database. It uses the functions from the UMARimportR package to
 #' insert the data into the database.
 #'
-#' @param code_no BS code name of the table
+#' @param px_code BS code name of the table
 #' @param con connection to database
 #' @param schema schema name, defaults to "platform"
 #' @param all_levels logical whether to let user use dimension selector, default

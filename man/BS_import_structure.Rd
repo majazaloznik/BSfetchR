@@ -13,6 +13,8 @@ BS_import_structure(
 )
 }
 \arguments{
+\item{px_code}{BS code name of the table}
+
 \item{con}{connection to database}
 
 \item{schema}{schema name, defaults to "platform"}
@@ -21,8 +23,6 @@ BS_import_structure(
 is true, which automatically selects all levels in all dimensions}
 
 \item{keep_vintage}{logical indicating whether to keep vintages, defaults to F}
-
-\item{code_no}{BS code name of the table}
 }
 \value{
 nothing
