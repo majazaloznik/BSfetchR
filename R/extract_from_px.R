@@ -1,12 +1,44 @@
-#' Read Bank of Slovenia PX files with proper encoding handling
+#' Read Bank of Slovenia PX files
 #'
 #' @param url URL to PX file
-#' @return Parsed PX object or NULL on failure
+#' @param quiet Logical. If TRUE, suppresses warnings
+#' @return Parsed PX object
 #' @export
-fetch_px <- function(url) {
-     temp_file <- tempfile()
-     download.file(url, temp_file, mode = "wb")
-     pxR::read.px(temp_file, encoding = "UTF-16LE")
+fetch_px <- function(url, quiet = FALSE) {
+  # Download the file
+  temp_file <- tempfile(fileext = ".px")
+  download.file(url, temp_file, mode = "wb", quiet = quiet)
+
+  # Check if file has BOM
+  con <- file(temp_file, "rb")
+  first_bytes <- readBin(con, "raw", n = 3)
+  close(con)
+
+  has_bom <- length(first_bytes) >= 3 &&
+    first_bytes[1] == as.raw(0xEF) &&
+    first_bytes[2] == as.raw(0xBB) &&
+    first_bytes[3] == as.raw(0xBF)
+
+  # Based on our diagnostic results, choose the right encoding strategy
+  if (has_bom) {
+    # Files with BOM work best with UTF-16LE on the server
+    if (!quiet) message("File has BOM, using UTF-16LE")
+    tryCatch({
+      return(pxR::read.px(temp_file, encoding = "UTF-16LE"))
+    }, error = function(e) {
+      if (!quiet) message("UTF-16LE failed, trying windows-1250")
+      return(pxR::read.px(temp_file, encoding = "windows-1250"))
+    })
+  } else {
+    # Files without BOM work best with UTF-8 on the server
+    if (!quiet) message("File has no BOM, using UTF-8")
+    tryCatch({
+      return(pxR::read.px(temp_file, encoding = "UTF-8"))
+    }, error = function(e) {
+      if (!quiet) message("UTF-8 failed, trying windows-1250")
+      return(pxR::read.px(temp_file, encoding = "windows-1250"))
+    })
+  }
 }
 
 #' Get PX file information

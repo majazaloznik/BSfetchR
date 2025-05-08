@@ -2,16 +2,18 @@
 % Please edit documentation in R/extract_from_px.R
 \name{fetch_px}
 \alias{fetch_px}
-\title{Read Bank of Slovenia PX files with proper encoding handling}
+\title{Read Bank of Slovenia PX files}
 \usage{
-fetch_px(url)
+fetch_px(url, quiet = FALSE)
 }
 \arguments{
 \item{url}{URL to PX file}
+
+\item{quiet}{Logical. If TRUE, suppresses warnings}
 }
 \value{
-Parsed PX object or NULL on failure
+Parsed PX object
 }
 \description{
-Read Bank of Slovenia PX files with proper encoding handling
+Read Bank of Slovenia PX files
 }
