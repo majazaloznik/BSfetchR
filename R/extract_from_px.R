@@ -72,8 +72,10 @@ get_px_metadata <- function(px_code, con, schema = "platform") {
   url <- BSfetchR::full |>
     dplyr::filter(px_code == !!px_code) |>
     dplyr::pull(px_url)
-  data.frame(name = gsub('\"\n\"', "", unlist(l$DESCRIPTION$value)),
-             updated = as.POSIXct(l$LAST.UPDATED$value,format="%Y%m%d %H:%M",tz=Sys.timezone()),
+  data.frame(name = gsub('\"\n\"', "", unlist(l$CONTENTS$value)),
+             updated = ifelse(!is.null(l$LAST.UPDATED$value),
+                              as.POSIXct(l$LAST.UPDATED$value,format="%Y%m%d %H:%M",tz=Sys.timezone()),
+                              as.POSIXct("19000101 00:00", format="%Y%m%d %H:%M",tz=Sys.timezone())),
              units = l$UNITS$value,
              notes = I(list(c(l$NOTE$value, l$NOTEX$value))),
              valuenotes =I(list(l$VALUENOTE$value))) |>
