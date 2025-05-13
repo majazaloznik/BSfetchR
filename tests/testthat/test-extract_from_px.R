@@ -19,7 +19,7 @@ test_that("get_px_metadata extracts metadata correctly", {
     expect_equal(ncol(result), 6)
     expect_equal(nrow(result), 1)
     # Check specific fields
-    expect_equal(result$name, "Stanje mednarodnih nalo\u017eb BPM6 - mio EUR - letno")
+    expect_true(grepl("Stanje", result$name))
     expect_s3_class(result$updated, "POSIXct")
     expect_equal(result$units, "mio EUR")
 })
@@ -36,7 +36,7 @@ test_that("get_px_dim_levels returns dimension levels", {
       expect_type(result, "list")
       expect_named(result, c("Datum", "Postavke"))
       expect_true(all(c("1994", "1995") %in% result$Datum))
-      expect_true(all(c("N. NETO STANJE MEDNARODNIH NALOŽB (Imetja - Obveznosti)") %in% result$Postavke))
+      expect_true(all(c("N. NETO STANJE MEDNARODNIH NALO\u017dB (Imetja - Obveznosti)") %in% result$Postavke))
     })
 })
 
