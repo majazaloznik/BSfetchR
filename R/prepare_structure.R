@@ -234,7 +234,7 @@ prepare_series_table <- function(px_code, con, schema = "platform"){
   expanded_level_codes <- expand_to_level_codes(tbl_id, con, schema) |>
     dplyr::mutate(unit_id = unit_id) |>
     tidyr::unite("code", dplyr::starts_with("Var"), sep = "--")  |>
-    dplyr::mutate(code = paste0("BSS--", px_code, "--", code, "--",interval_id))  |>
+    dplyr::mutate(code = paste0("BS--", px_code, "--", code, "--",interval_id))  |>
     cbind(expand_to_series_titles(tbl_id, con, schema)) |>
     dplyr::mutate(table_id = tbl_id,
                   interval_id = interval_id)  |>
