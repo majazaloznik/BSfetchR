@@ -36,7 +36,7 @@ test_that("get_px_dim_levels returns dimension levels", {
       expect_type(result, "list")
       expect_named(result, c("Datum", "Postavke"))
       expect_true(all(c("1994", "1995") %in% result$Datum))
-      print(results$Postavke[1])
+      print(result$Postavke[1])
       expect_true(all(c("N. NETO STANJE MEDNARODNIH NALO\u017dB (Imetja - Obveznosti)") %in% result$Postavke))
     })
 })
