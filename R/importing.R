@@ -107,7 +107,7 @@ BS_import_data_points <- function(px_code, con, schema = "platform") {
   if (!is.null(vintage_result$vintages)) {
     # import vintages
     result$vintages <- UMARimportR::insert_new_vintage(con, vintage_result$vintages, schema)
-    # Prepare data in SURS-specific way
+    # Prepare data in BS-specific way
     prep_data <- prepare_bs_data_for_insert(px_code, con, schema)
     # Insert the prepared data
     result$data <- UMARimportR::insert_prepared_data_points(prep_data, con, schema)
