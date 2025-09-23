@@ -295,7 +295,7 @@
       "RemoteUsername": "majazaloznik",
       "RemoteRepo": "UMARimportR",
       "RemoteRef": "main",
-      "RemoteSha": "0f8f40d886beb88218daf8bdf20a540b0a8a7073",
+      "RemoteSha": "c791dc127ce23f47332c2ec3964a9eabe7d4d31b",
       "Remotes": "majazaloznik/UMARaccessR"
     },
     "askpass": {
