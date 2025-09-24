@@ -59,6 +59,17 @@ BS_import_structure <- function(px_code, con, schema = "platform", all_levels = 
       dplyr::select(-dimension)} else {
         dimension_levels_table <- UMARimportR::dimension_selector(dimension_levels_table_full) |>
           dplyr::select(-dimension)}
+
+  str(dimension_levels_table)  # or whatever data structure you're passing
+
+  # Check for any non-ASCII or unusual data
+  sapply(dimension_levels_table, function(col) {
+    if (is.character(col)) {
+      cat("Column values:", paste(col, collapse = ", "), "\n")
+      cat("Encodings:", paste(Encoding(col), collapse = ", "), "\n")
+    }
+  })
+
   insert_results$dimension_levels <- UMARimportR::insert_new_dimension_levels(
     con, dimension_levels_table, schema)
   message("Dimension levels insert: ", insert_results$dimension_levels$count, " rows")
