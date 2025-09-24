@@ -21,6 +21,16 @@ BS_import_structure <- function(px_code, con, schema = "platform", all_levels = 
   insert_results <- list()
   # prepare and insert table
   table_table <- prepare_table_table(px_code, keep_vintage, con, schema)
+  cat("Table data being passed to insert_new_table_table:\n")
+  str(table_table)
+  cat("Serialized for comment:\n")
+  args_list <- as.list(table_table)
+  param_values <- sapply(args_list, function(x) {
+    if (inherits(x, "integer64")) return(as.numeric(x))
+    if (inherits(x, "POSIXct")) return(format(x))
+    x
+  })
+  cat(paste(names(args_list), param_values, collapse = ","), "\n")
   insert_results$table <- UMARimportR::insert_new_table_table(con, table_table, schema)
   message("Table insert: ", insert_results$table$count, " rows")
   # preapre and insert category table
