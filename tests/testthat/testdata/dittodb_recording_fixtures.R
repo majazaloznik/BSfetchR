@@ -85,13 +85,5 @@ result <- BS_import_structure("F2_Q1S", con_test, schema = "platform")
 x <- BS_import_data_points("F2_Q1S", con_test, schema = "platform")
 stop_db_capturing()
 
-dittodb::start_db_capturing()
-con <- make_test_connection()
 
-# Call the specific function that generates this SQL
-UMARimportR::sql_function_call(con, "get_source_code_from_source_name",
-                               list(p_source_name = "BS"),
-                               schema = "platform")
-
-dittodb::stop_db_capturing()
 

@@ -45,6 +45,8 @@ fetch_px <- function(url, quiet = FALSE) {
       x <- stringr::str_replace_all(x, "\u0139\u00A1", "\u0161")  # Ĺ¡ -> š
       x <- stringr::str_replace_all(x, "\u00C4\u017E", "\u017D")  # Äž -> Ž
       x <- stringr::str_replace_all(x, "\u0139\u013E", "\u017E")  # Ĺľ -> ž
+      x <- stringr::str_replace_all(x, "\u00C4\u015A", "\u010C")  # ÄŚ -> Č
+      x <- stringr::str_replace_all(x, "\u0139\u02C7", "\u0161")  # ÄŚ -> Č
       # Ensure UTF-8
       Encoding(x) <- "UTF-8"
     }
