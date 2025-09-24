@@ -296,7 +296,7 @@
       "RemoteRepo": "UMARimportR",
       "RemoteUsername": "majazaloznik",
       "RemoteRef": "HEAD",
-      "RemoteSha": "db365f0f3adb70fa6973fe956076ebb852cb5d53",
+      "RemoteSha": "cc4643359418758d6a0f287fbbb034212533a951",
       "NeedsCompilation": "no"
     },
     "askpass": {

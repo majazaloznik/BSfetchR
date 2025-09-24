@@ -5,7 +5,6 @@
 #' @return Parsed PX object
 #' @export
 fetch_px <- function(url, quiet = FALSE) {
-  # Download the file
   temp_file <- tempfile(fileext = ".px")
   download.file(url, temp_file, mode = "wb", quiet = quiet)
 
@@ -13,32 +12,47 @@ fetch_px <- function(url, quiet = FALSE) {
   con <- file(temp_file, "rb")
   first_bytes <- readBin(con, "raw", n = 3)
   close(con)
-
   has_bom <- length(first_bytes) >= 3 &&
     first_bytes[1] == as.raw(0xEF) &&
     first_bytes[2] == as.raw(0xBB) &&
     first_bytes[3] == as.raw(0xBF)
 
-  # Based on our diagnostic results, choose the right encoding strategy
+  # Your existing encoding strategy
   if (has_bom) {
-    # Files with BOM work best with UTF-16LE on the server
     if (!quiet) message("File has BOM, using UTF-16LE")
     tryCatch({
-      return(pxR::read.px(temp_file, encoding = "UTF-16LE"))
+      result <- pxR::read.px(temp_file, encoding = "UTF-16LE")
     }, error = function(e) {
       if (!quiet) message("UTF-16LE failed, trying windows-1250")
-      return(pxR::read.px(temp_file, encoding = "windows-1250"))
+      result <<- pxR::read.px(temp_file, encoding = "windows-1250")
     })
   } else {
-    # Files without BOM work best with UTF-8 on the server
     if (!quiet) message("File has no BOM, using UTF-8")
     tryCatch({
-      return(pxR::read.px(temp_file, encoding = "UTF-8"))
+      result <- pxR::read.px(temp_file, encoding = "UTF-8")
     }, error = function(e) {
       if (!quiet) message("UTF-8 failed, trying windows-1250")
-      return(pxR::read.px(temp_file, encoding = "windows-1250"))
+      result <<- pxR::read.px(temp_file, encoding = "windows-1250")
     })
   }
+
+  # Post-process: fix any mangled characters regardless of encoding used
+  fix_character_encoding <- function(x) {
+    if (is.character(x)) {
+      # Fix common windows-1250 -> UTF-8 conversion issues
+      x <- stringr::str_replace_all(x, "ÄŤ", "\u010D")  # č
+      x <- stringr::str_replace_all(x, "Ĺ˝", "\u017E")  # ž
+      x <- stringr::str_replace_all(x, "Ĺ¡", "\u0161")  # š
+      x <- stringr::str_replace_all(x, "Äž", "\u017E")  # ž (alternate)
+      x <- stringr::str_replace_all(x, "Ĺ ", "\u0148")  # ň
+      # Ensure UTF-8
+      Encoding(x) <- "UTF-8"
+    }
+    x
+  }
+  # Apply to all character data in the PX structure
+  result <- rapply(result, fix_character_encoding, classes = "character", how = "replace")
+  result
 }
 
 #' Get PX file information
