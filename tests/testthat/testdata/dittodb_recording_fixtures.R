@@ -86,6 +86,3 @@ x <- BS_import_data_points("F2_Q1S", con_test, schema = "platform")
 stop_db_capturing()
 
 
-con <- make_connection()
-x <- prepare_bs_data_for_insert("I2_10_AS", con, schema = "platform")
-
