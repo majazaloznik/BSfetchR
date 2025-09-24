@@ -41,9 +41,10 @@ fetch_px <- function(url, quiet = FALSE) {
     if (is.character(x)) {
       # Fix common windows-1250 -> UTF-8 conversion issues using only Unicode escapes
       x <- stringr::str_replace_all(x, "\u00C4\u0164", "\u010D")  # ÄŤ -> č
-      x <- stringr::str_replace_all(x, "\u0139\u02DD", "\u017D")  # Ĺ˝ -> ž
+      x <- stringr::str_replace_all(x, "\u0139\u02DD", "\u017D")  # Ĺ˝ -> Ž
       x <- stringr::str_replace_all(x, "\u0139\u00A1", "\u0161")  # Ĺ¡ -> š
       x <- stringr::str_replace_all(x, "\u00C4\u017E", "\u017D")  # Äž -> Ž
+      x <- stringr::str_replace_all(x, "\u0139\u013E", "\u017E")  # Ĺľ -> ž
       # Ensure UTF-8
       Encoding(x) <- "UTF-8"
     }
