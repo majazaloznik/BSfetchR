@@ -27,3 +27,5 @@ expand_to_series_titles <- function (tbl_id, con, schema = "platform") {
             stringsAsFactors = FALSE)) |>
     tidyr::unite("name_long", dplyr::everything(), sep = " -- ")
 }
+
+

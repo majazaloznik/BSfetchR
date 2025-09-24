@@ -272,7 +272,6 @@
       "Description": "More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.",
       "License": "GPL (>= 3)",
       "Encoding": "UTF-8",
-      "LazyData": "true",
       "Suggests": [
         "covr (>= 3.6.4)",
         "dittodb (>= 0.1.8)",
@@ -288,15 +287,17 @@
         "DBI (>= 1.2.0)",
         "RPostgres (>= 1.4.0)",
         "dplyr (>= 1.0.0)",
-        "purrr (>= 1.0.0)"
+        "purrr (>= 1.0.0)",
+        "stringr"
       ],
+      "Remotes": "majazaloznik/UMARaccessR",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "majazaloznik",
       "RemoteRepo": "UMARimportR",
-      "RemoteRef": "main",
-      "RemoteSha": "c791dc127ce23f47332c2ec3964a9eabe7d4d31b",
-      "Remotes": "majazaloznik/UMARaccessR"
+      "RemoteUsername": "majazaloznik",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "db365f0f3adb70fa6973fe956076ebb852cb5d53",
+      "NeedsCompilation": "no"
     },
     "askpass": {
       "Package": "askpass",

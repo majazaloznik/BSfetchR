@@ -5,6 +5,6 @@ structure(list(SEKTOR = c("4", "5", "7", "1", "2"), TIP_POD = c("0",
 ), value = c(NA_real_, NA_real_, NA_real_, NA_real_, NA_real_
 ), time = c("2004Q1", "2004Q1", "2004Q1", "2004Q2", "2004Q2"), 
     flag = c("", "", "", "", ""), interval_id = c("Q", "Q", "Q", 
-    "Q", "Q"), series_id = c(113027L, 113044L, 113038L, 113024L, 
-    113041L), vintage_id = c(7233210L, 7233227L, 7233221L, 7233207L, 
-    7233224L)), class = "data.frame", row.names = c(NA, -5L))
+    "Q", "Q"), series_id = c(114107L, 114124L, 114118L, 114104L, 
+    114121L), vintage_id = c(7234290L, 7234307L, 7234301L, 7234287L, 
+    7234304L)), class = "data.frame", row.names = c(NA, -5L))
