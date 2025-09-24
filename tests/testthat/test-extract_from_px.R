@@ -38,7 +38,7 @@ test_that("get_px_dim_levels returns dimension levels", {
       expect_true(all(c("1994", "1995") %in% result$Datum))
       expected_text <- "N. NETO STANJE MEDNARODNIH NALOŽB (Imetja - Obveznosti)"
       normalize_text <- function(x) {
-        x <- stringr::str_replace_all(x, "\u0139\u02DD", "\u017E")  # Ĺ˝ -> ž
+        x <- stringr::str_replace_all(x, "\u0139\u02DD", "\u017D")  # Ĺ˝ -> Ž
         x <- stringr::str_replace_all(x, "\u017E", "ž")            # ž -> ž (normalize)
         iconv(x, to = "UTF-8", sub = "")
       }
