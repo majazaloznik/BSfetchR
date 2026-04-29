@@ -14,8 +14,8 @@ source("tests/testthat/helper-connection.R")
 # con <- make_connection()
 # result1 <- get_px_list("i_36_6as")
 # result2 <- get_px_metadata("i_36_6as", con)
-# result3 <- get_px_dim_levels("i_36_6as", con)
-# result4 <- get_px_data("i_36_6as", con)
+# result3 <- get_px_dim_levels("i_36_6as")
+# result4 <- get_px_data("i_36_6as")
 # stop_db_capturing()
 #
 # start_db_capturing()
@@ -68,11 +68,11 @@ stop_db_capturing()
 # result <- BS_import_structure("F2_Q1S", con_test, schema = "test_platform")
 # stop_db_capturing()
 #
-# start_db_capturing()
-# con_test <- make_test_connection()
-# x <- prepare_vintage_table("F2_Q1S", con_test, schema = "platform")
-# x <- prepare_bs_data_for_insert("F2_Q1S", con_test, schema = "platform")
-# stop_db_capturing()
+start_db_capturing()
+con_test <- make_test_connection()
+x <- prepare_vintage_table("F2_Q1S", con_test, schema = "platform")
+x <- prepare_bs_data_for_insert("F2_Q1S", con_test, schema = "platform")
+stop_db_capturing()
 
 # start_db_capturing()
 # con_test <- make_test_connection()
@@ -81,9 +81,12 @@ stop_db_capturing()
 #
 start_db_capturing()
 con_test <- make_test_connection()
-result <- BS_import_structure("F2_Q1S", con_test, schema = "platform")
-x <- BS_import_data_points("F2_Q1S", con_test, schema = "platform")
+result <- BS_import_structure("I2_4_4AS", con_test, schema = "platform")
+x <- BS_import_data_points("I2_4_4AS", con_test, schema = "platform")
 stop_db_capturing()
 
+con_test <- make_test_connection()
+x <- BS_import_data_points("F2_Q1S", con_test, schema = "platform")
 
-
+x <- prepare_bs_data_for_insert("F2_Q1S", con_test, schema = "platform")
+#

@@ -1,13 +1,9 @@
-
-
 test_that("prepare source table", {
-  dittodb::with_mock_db({
     result <- get_px_list("i_36_6as")
     expect_s3_class(result, "px")
     expect_true(length(result) == 22)
     expect_true(all(c("VALUES", "DATA", "CONTENTS") %in% names(result)))
     expect_equal(result$UNITS$value, "mio EUR")
-  })
 })
 
 
@@ -26,11 +22,9 @@ test_that("get_px_metadata extracts metadata correctly", {
 
 # Test for get_px_dim_levels
 test_that("get_px_dim_levels returns dimension levels", {
-  # Mock dependencies
-  dittodb::with_mock_db({
-    con <- make_connection()
+
       # Call the function
-    result <- get_px_dim_levels("i_36_6as", con)
+    result <- get_px_dim_levels("i_36_6as")
 
       # Check result
       expect_type(result, "list")
@@ -42,29 +36,20 @@ test_that("get_px_dim_levels returns dimension levels", {
         x <- stringr::str_replace_all(x, "\u017E", "ž")            # ž -> ž (normalize)
         iconv(x, to = "UTF-8", sub = "")
       }
-
       normalized_result <- normalize_text(result$Postavke[1])
       normalized_expected <- normalize_text(expected_text)
-
       expect_equal(normalized_result, normalized_expected)
 
-    })
 })
 
 # Test for get_px_data
 test_that("get_px_data returns data values", {
-  # Mock dependencies
-  dittodb::with_mock_db({
-    con <- make_connection()
       # Call the function
-    result <- get_px_data("i_36_6as", con)
+    result <- get_px_data("i_36_6as")
     expect_s3_class(result, "data.frame")
     expect_equal(ncol(result), 3)
-    })
 })
 
-#' @title Tests for fetch_px function
-#' @description Test suite for fetch_px function
 
 test_that("fetch_px detects BOM correctly and reads files", {
   # Skip on CRAN or if offline
@@ -89,8 +74,6 @@ test_that("fetch_px detects BOM correctly and reads files", {
     skip(paste("Network error or BOM file unavailable:", e$message))
   })
 })
-#' @title Tests for fetch_px function
-#' @description Test suite for fetch_px function
 
 # Test for files with BOM
 test_that("fetch_px detects BOM correctly and reads files", {

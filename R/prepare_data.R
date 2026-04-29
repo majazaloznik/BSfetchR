@@ -14,7 +14,7 @@
 #' for all the series in this table.
 #' @export
 #'
-prepare_vintage_table <- function(px_code, con, schema){
+prepare_vintage_table <- function(px_code, con, schema = "platform"){
   tbl_id <- UMARaccessR::sql_get_table_id_from_table_code(con, px_code, schema)
   published <- get_px_metadata(px_code)$updated
   last_published <- UMARaccessR::sql_get_last_publication_date_from_table_id(tbl_id, con, schema)
@@ -52,6 +52,24 @@ prepare_bs_data_for_insert <- function(px_code, con, schema = "platform") {
   time_dim <- UMARaccessR::sql_get_time_dimension_from_table_code(px_code, con, schema)
   df <- get_px_data(px_code)
   dim_levels <- prepare_dimension_levels_table(px_code, con, schema)
+  dim_levels_in_db <- UMARaccessR::sql_get_dimension_levels_from_table_id(tbl_id, con, schema)
+
+  # existing check: same code -> same text
+  mismatches_code <- dplyr::inner_join(dim_levels, dim_levels_in_db,
+                                       by = c("tab_dim_id", "level_value")) |>
+    dplyr::filter(level_text.x != level_text.y)
+
+  # new check: same text -> same code
+  mismatches_text <- dplyr::inner_join(dim_levels, dim_levels_in_db,
+                                       by = c("tab_dim_id", "level_text")) |>
+    dplyr::filter(level_value.x != level_value.y)
+
+  if (nrow(mismatches_code) > 0 || nrow(mismatches_text) > 0) {
+    stop("Dimension level mismatch for ", px_code,
+         ". Code conflicts: ", paste(mismatches_code$level_value, collapse = ", "),
+         ". Shifted texts: ", paste(mismatches_text$level_text, collapse = ", "))
+  }
+
   dims_to_recode <- unique(dim_levels$dimension)
   # Get non-dimension columns
   non_dim_cols <- setdiff(names(df), dims_to_recode)

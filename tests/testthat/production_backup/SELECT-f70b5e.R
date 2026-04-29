@@ -1,10 +1,9 @@
-structure(list(SEKTOR = c("4", "5", "7", "1", "2"), TIP_POD = c("0", 
-"2", "1", "0", "2"), VRSTA = c("1", "1", "1", "1", "1"), FIN_INSTRUM = c("10", 
-"10", "10", "10", "10"), Postavke = c("0", "0", "0", "0", "0"
-), Datum = c("2004Q1", "2004Q1", "2004Q1", "2004Q2", "2004Q2"
-), value = c(NA_real_, NA_real_, NA_real_, NA_real_, NA_real_
-), time = c("2004Q1", "2004Q1", "2004Q1", "2004Q2", "2004Q2"), 
-    flag = c("", "", "", "", ""), interval_id = c("Q", "Q", "Q", 
-    "Q", "Q"), series_id = c(119507L, 119524L, 119518L, 119504L, 
-    119521L), vintage_id = c(7239690L, 7239707L, 7239701L, 7239687L, 
-    7239704L)), class = "data.frame", row.names = c(NA, -5L))
+structure(list(Frekvenca = c("0", "0", "0", "0", "0"), Postavke = c("0", 
+"1", "2", "3", "4"), Datum = c("2003M01", "2003M01", "2003M01", 
+"2003M01", "2003M01"), value = c(NA_real_, NA_real_, NA_real_, 
+NA_real_, NA_real_), time = c("2003M01", "2003M01", "2003M01", 
+"2003M01", "2003M01"), flag = c("", "", "", "", ""), interval_id = c("M", 
+"M", "M", "M", "M"), series_id = c(129353L, 129355L, 129377L, 
+129399L, 129421L), vintage_id = c(7248775L, 7248777L, 7248799L, 
+7248821L, 7248843L)), class = "data.frame", row.names = c(NA, 
+-5L))

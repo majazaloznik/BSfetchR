@@ -10,17 +10,16 @@ get_all_bsi_tables(base_url = "https://px.bsi.si/pxweb/sl/serije_slo/")
 \item{base_url}{The base URL of the Bank of Slovenia data portal}
 }
 \value{
-A data frame containing information about all categories and tables,
-        including category codes, IDs, and parent-child relationships
+A data frame with table metadata and hierarchical IDs
 }
 \description{
-This function retrieves the complete hierarchy of data tables
-from the Bank of Slovenia statistical data portal, including top-level
-categories, subcategories, and actual data tables. It also extracts
-category codes and creates a hierarchical ID structure.
+Retrieves the complete hierarchy of data tables from the Bank of Slovenia
+statistical data portal by navigating three levels: top-level categories,
+subcategories, and actual data tables.
 }
 \examples{
 \dontrun{
 all_tables <- get_all_bsi_tables()
 }
+
 }

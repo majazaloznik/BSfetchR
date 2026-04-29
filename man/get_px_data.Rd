@@ -4,14 +4,10 @@
 \alias{get_px_data}
 \title{Get data values from a PX file}
 \usage{
-get_px_data(px_code, con, schema = "platform")
+get_px_data(px_code)
 }
 \arguments{
 \item{px_code}{Character string identifying the PX file (e.g., "F2_A1S")}
-
-\item{con}{Database connection object}
-
-\item{schema}{Database schema name, defaults to "platform"}
 }
 \value{
 A vector of data values

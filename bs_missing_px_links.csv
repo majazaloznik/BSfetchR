@@ -1,0 +1,19 @@
+"","type","name","px_url","modified_date","category_code","category_name","subcategory_code","subcategory_name","px_code","category_id","subcategory_id","id","parent_id"
+"1","data_table","Bilanca Banke Slovenije - Instrumenti - Aktiva - mio EUR",NA,"29.04.2026","serije_slo__10_denar_mfi","Finančne institucije in trgi","30_bilanca_bs","Bilanca Banke Slovenije",NA,1,21,21,1
+"2","data_table","Obrestne mere monetarnih finančnih institucij - nova posojila nefinančnim družbam po originalni zapadlosti v domači valuti",NA,"01.04.2026","serije_slo__20_obrestne_mere","Obrestne mere","20_OBR_MERE_MFI","Obrestne mere monetarnih finančnih institucij (MIR statistika)",NA,2,15,15,2
+"3","data_table","Monetarne finančne institucije - obseg  novih posojil nefinančnim družbam po originalni zapadlosti v domači valuti",NA,"01.04.2026","serije_slo__20_obrestne_mere","Obrestne mere","20_OBR_MERE_MFI","Obrestne mere monetarnih finančnih institucij (MIR statistika)",NA,2,15,15,2
+"4","data_table","Mednarodne rezerve - mio EUR - mesečno",NA,"07.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","30_MEDN_REZERVE","Mednarodne rezerve",NA,3,19,19,3
+"5","data_table","Mednarodne rezerve - mio EUR - četrtletno",NA,"07.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","30_MEDN_REZERVE","Mednarodne rezerve",NA,3,19,19,3
+"6","data_table","Mednarodne rezerve - mio EUR - letno",NA,"07.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","30_MEDN_REZERVE","Mednarodne rezerve",NA,3,19,19,3
+"7","data_table","Zunanji dolg (BPM6) - neto - mio EUR - mesečno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"8","data_table","Zunanji dolg (BPM6) - neto - mio EUR - četrtletno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"9","data_table","Zunanji dolg (BPM6) - neto - mio EUR - letno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"10","data_table","Zunanji dolg (BPM6) - Imetja - mio EUR - mesečno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"11","data_table","Zunanji dolg (BPM6) - Imetja - mio EUR - četrtletno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"12","data_table","Zunanji dolg (BPM6) - Imetja - mio EUR - letno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"13","data_table","Zunanji dolg (BPM6) - Obveznosti - mio EUR - mesečno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"14","data_table","Zunanji dolg (BPM6) - Obveznosti - mio EUR - četrtletno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"15","data_table","Zunanji dolg (BPM6) - Obveznosti - mio EUR - letno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"16","data_table","Javni in javno garantirani dolg, Negarantirani zasebni dolg - mio EUR - mesečno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"17","data_table","Javni in javno garantirani dolg, Negarantirani zasebni dolg - mio EUR - četrtletno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3
+"18","data_table","Javni in javno garantirani dolg, Negarantirani zasebni dolg - mio EUR - letno",NA,"13.04.2026","serije_slo__30_EOT","Ekonomski odnosi s tujino","40_ZUNANJI_DOLG","Zunanji dolg",NA,3,24,24,3

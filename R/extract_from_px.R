@@ -89,10 +89,10 @@ get_px_metadata <- function(px_code, con, schema = "platform") {
     dplyr::filter(px_code == !!px_code) |>
     dplyr::pull(px_url)
   data.frame(name = gsub('\"\n\"', "", unlist(l$CONTENTS$value)),
-             updated = as.POSIXct(ifelse(!is.null(l$LAST.UPDATED$value),
+             updated = lubridate::with_tz(as.POSIXct(ifelse(!is.null(l$LAST.UPDATED$value),
                                          l$LAST.UPDATED$value,
                                          "19000101 00:00" ),
-                                  format = "%Y%m%d %H:%M", tz = Sys.timezone()),
+                                  format = "%Y%m%d %H:%M", tz = Sys.timezone()), "UTC"), # save as UTC to database
              units = l$UNITS$value,
              notes = I(list(c(l$NOTE$value, l$NOTEX$value))),
              valuenotes =I(list(l$VALUENOTE$value))) |>
@@ -105,11 +105,9 @@ get_px_metadata <- function(px_code, con, schema = "platform") {
 #' Extracts the dimension levels (categories) from a Bank of Slovenia PX file.
 #'
 #' @param px_code Character string identifying the PX file (e.g., "F2_A1S")
-#' @param con Database connection object
-#' @param schema Database schema name, defaults to "platform"
 #' @return A list of dimension levels
 #' @export
-get_px_dim_levels <- function(px_code, con, schema = "platform") {
+get_px_dim_levels <- function(px_code) {
   l <- get_px_list(px_code)
   l$VALUES
 }
@@ -119,11 +117,9 @@ get_px_dim_levels <- function(px_code, con, schema = "platform") {
 #' Extracts the actual data values from a Bank of Slovenia PX file.
 #'
 #' @param px_code Character string identifying the PX file (e.g., "F2_A1S")
-#' @param con Database connection object
-#' @param schema Database schema name, defaults to "platform"
 #' @return A vector of data values
 #' @export
-get_px_data <- function(px_code, con, schema = "platform") {
+get_px_data <- function(px_code) {
   l <- get_px_list(px_code)
   l$DATA$value
 }

@@ -4,7 +4,7 @@
 \alias{prepare_vintage_table}
 \title{Prepare table to insert into `vintage` table}
 \usage{
-prepare_vintage_table(px_code, con, schema)
+prepare_vintage_table(px_code, con, schema = "platform")
 }
 \arguments{
 \item{px_code}{the original BS code (e.g. i_36_6as)}

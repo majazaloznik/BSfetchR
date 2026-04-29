@@ -147,7 +147,7 @@ prepare_category_table_table <- function(px_code, con, schema = "platform") {
 #'
 prepare_table_dimensions_table <- function(px_code, con, schema = "platform") {
   tbl_id <- UMARaccessR::sql_get_table_id_from_table_code(con, px_code, schema)
-  dim_list <- get_px_dim_levels(px_code, con, schema)
+  dim_list <- get_px_dim_levels(px_code)
   data.frame(table_id = tbl_id,
              dimension = names(dim_list)) |>
   dplyr::mutate(is_time = ifelse(grepl("Datum", dimension), TRUE, FALSE))
@@ -179,7 +179,7 @@ prepare_dimension_levels_table <- function(px_code, con, schema = "platform") {
       tibble::tibble(
         dimension_name = dim_name,
         level_text = l$VALUES[[dim_name]],
-        level_value = seq_along(l$VALUES[[dim_name]]) - 1 ) |>
+        level_value = as.character(seq_along(l$VALUES[[dim_name]]) - 1)) |>
         dplyr::filter(dimension_name != "Datum")}) |>
     dplyr::inner_join(dim_ids, by = c("dimension_name" = "dimension")) |>
     dplyr::rename(tab_dim_id = id, dimension = dimension_name)

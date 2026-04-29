@@ -109,32 +109,34 @@ BS_import_structure <- function(px_code, con, schema = "platform", all_levels = 
 #' @export
 BS_import_data_points <- function(px_code, con, schema = "platform") {
   message("Importing data points from: ", px_code, " into schema ", schema)
-  # collect outputs from the functions into one result list
   result <- list()
-  # Try to prepare SURS vintage table but catch any errors
+
   vintage_result <- tryCatch(
-    expr = {list(
-      vintages = prepare_vintage_table(px_code, con, schema),
-      error = NULL)},
+    expr = list(vintages = prepare_vintage_table(px_code, con, schema), error = NULL),
     error = function(e) {
       error_msg <- conditionMessage(e)
       message("Note: ", error_msg)
-      return(list(
-        vintages = NULL,
-        error = error_msg))})
-  # Store error message if any
+      list(vintages = NULL, error = error_msg)
+    })
   result$vintage_error <- vintage_result$error
-  # Only proceed with import if vintages were prepared successfully
+
   if (!is.null(vintage_result$vintages)) {
-    # import vintages
     result$vintages <- UMARimportR::insert_new_vintage(con, vintage_result$vintages, schema)
-    # Prepare data in BS-specific way
-    prep_data <- prepare_bs_data_for_insert(px_code, con, schema)
-    # Insert the prepared data
-    result$data <- UMARimportR::insert_prepared_data_points(prep_data, con, schema)
+
+    prep_result <- tryCatch(
+      expr = list(data = prepare_bs_data_for_insert(px_code, con, schema), error = NULL),
+      error = function(e) list(data = NULL, error = conditionMessage(e))
+    )
+    result$data_error <- prep_result$error
+
+    if (!is.null(prep_result$data)) {
+      result$data <- UMARimportR::insert_prepared_data_points(prep_result$data, con, schema)
+    } else {
+      message("Skipping data import for ", px_code, ": ", prep_result$error)
+    }
   } else {
     message("Skipping import for ", px_code, " due to vintage preparation issue: ", vintage_result$error)
   }
+
   invisible(result)
 }
-

@@ -1,84 +1,72 @@
-library(httr)
-library(xml2)
-library(rvest)
-library(dplyr)
-library(stringr)
-
-# Tests for Bank of Slovenia data scraper functions
-
-# Test for extract_bsi_tables()
-test_that("extract_bsi_tables extracts top-level categories and subcategories", {
-  # Skip if not on interactive mode to avoid HTTP requests in automated testing
-
-  # Get actual data from the website
+test_that("extract_bsi_tables returns expected structure and content", {
+  #skip("Live scraping test - only run manually when regenerating full dataset")
   result <- extract_bsi_tables()
 
-  # Test basics of the result
   expect_s3_class(result, "data.frame")
-  expect_true(nrow(result) > 0)
-  expect_true("type" %in% names(result))
-  expect_true("name" %in% names(result))
-  expect_true("url" %in% names(result))
-
-  # Check for expected categories
-  categories <- result[result$type == "category", ]
-  expect_true(any(grepl("Finan\u010dn", categories$name)))
-
-  # Check for expected subcategories
-  subcategories <- result[result$type == "subcategory", ]
-  expect_true(nrow(subcategories) > 0)
-  expect_true(all(!is.na(subcategories$parent)))
-
-  # Check direct links (type 'both')
-  direct_links <- result[result$type == "both", ]
-  if (nrow(direct_links) > 0) {
-    expect_true(all(grepl("^https://", direct_links$full_url)))
-  }
+  expect_named(result, c("name", "category_code", "full_url", "level"))
+  expect_equal(nrow(result), 5)
+  expect_true(all(!is.na(result$name)))
+  expect_true(all(!is.na(result$category_code)))
+  expect_true(all(grepl("^https://px.bsi.si", result$full_url)))
+  expect_true(any(grepl("Finan\u010dn", result$name)))
 })
 
+test_that("extract_subcategory_urls returns expected structure and content", {
+  #skip("Live scraping test - only run manually when regenerating full dataset")
+  result <- extract_subcategory_urls("serije_slo__10_denar_mfi")
 
-# Test for get_all_bsi_tables()
-test_that("get_all_bsi_tables integrates both levels and adds IDs", {
+  expect_s3_class(result, "data.frame")
+  expect_named(result, c("name", "url", "subcategory_code"))
+  expect_true(nrow(result) > 0)
+  expect_true(all(!is.na(result$name)))
+  expect_true(all(!is.na(result$subcategory_code)))
+  expect_true(all(grepl("^https://px.bsi.si", result$url)))
+  expect_true(all(grepl("tablelist=true", result$url)))
+  # all subcategory codes should belong to the requested category
+  expect_true(all(grepl("10_denar_mfi__", result$url)))
+})
 
-  # For interactive testing, only fetch a limited subset to avoid long execution
-  # Use a small timeout to make the test faster
-  old_timeout <- getOption("timeout")
-  options(timeout = 5)
-  on.exit(options(timeout = old_timeout))
+test_that("extract_second_level_tables returns expected structure", {
+  #skip("Live scraping test - only run manually when regenerating full dataset")
+  result <- extract_second_level_tables(
+    "https://px.bsi.si/pxweb/sl/serije_slo/serije_slo__20_obrestne_mere__10_OBR_MERE_BS/?tablelist=true"
+  )
 
-  # Get actual data but limit scope
+  expect_s3_class(result, "data.frame")
+  expect_true(nrow(result) > 0)
+  expect_true(all(c("name", "px_url", "modified_date") %in% names(result)))
+  expect_true(all(!is.na(result$name)))
+  expect_true(all(grepl("\\.px", result$px_url), na.rm = TRUE))
+})
+
+test_that("get_all_bsi_tables returns expected structure with IDs", {
+  #skip("Live scraping test - only run manually when regenerating full dataset")
   result <- get_all_bsi_tables()
 
-  # Limit further processing to just a subset
-  result <- head(result, 10)
-
-  # Test the structure
   expect_s3_class(result, "data.frame")
-  expect_true("category_code" %in% names(result))
-  expect_true("subcategory_code" %in% names(result))
-  expect_true("category_id" %in% names(result))
-  expect_true("subcategory_id" %in% names(result))
-  expect_true("id" %in% names(result))
-  expect_true("parent_id" %in% names(result))
+  expect_true(nrow(result) > 0)
+  expect_true(all(c("type", "name", "category_code", "subcategory_code",
+                    "px_code", "category_id", "subcategory_id",
+                    "id", "parent_id") %in% names(result)))
 
-  # Check some key relationships
-  if (nrow(result[result$type == "subcategory", ]) > 0) {
-    # Subcategories should have parent IDs that match category IDs
-    subcategories <- result[result$type == "subcategory", ]
-    for (i in 1:nrow(subcategories)) {
-      parent_name <- subcategories$parent[i]
-      parent_row <- result[result$name == parent_name & result$type == "category", ]
-      if (nrow(parent_row) > 0) {
-        expect_equal(subcategories$parent_id[i], parent_row$category_id[1])
-      }
-    }
-  }
+  # type values are as expected
+  expect_true(all(result$type %in% c("category", "subcategory", "data_table")))
 
-  # Check that IDs are properly assigned
+  # every category has type = "category" and parent_id = 0
+  cats <- result[result$type == "category", ]
+  expect_true(all(cats$parent_id == 0))
+  expect_true(all(!is.na(cats$category_id)))
+
+  # subcategories have parent_id matching a category_id
+  subcats <- result[result$type == "subcategory", ]
+  expect_true(all(subcats$parent_id > 0))
+  expect_true(all(subcats$parent_id %in% cats$category_id))
+
+  # data tables have px_code and px_url
+  tables <- result[result$type == "data_table", ]
+  expect_true(all(!is.na(tables$px_code)))
+  expect_true(all(grepl("^https://", tables$px_url[!is.na(tables$px_url)])))
+
+  # all rows have an id
   expect_true(all(!is.na(result$id)))
-  expect_true(all(result$parent_id[result$type == "category"] == 0))
-  if (any(result$type == "data_table")) {
-    data_tables <- result[result$type == "data_table", ]
-    expect_true(all(!is.na(data_tables$parent_id)))
-  }
 })

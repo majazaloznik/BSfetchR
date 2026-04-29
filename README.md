@@ -16,13 +16,3 @@ You can install the development version of BSfetchR from [GitHub](https://github
 # install.packages("pak")
 pak::pak("majazaloznik/BSfetchR")
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(BSfetchR)
-## basic example code
-```
-
