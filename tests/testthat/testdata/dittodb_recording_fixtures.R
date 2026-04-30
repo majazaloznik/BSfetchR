@@ -74,19 +74,22 @@ x <- prepare_vintage_table("F2_Q1S", con_test, schema = "platform")
 x <- prepare_bs_data_for_insert("F2_Q1S", con_test, schema = "platform")
 stop_db_capturing()
 
-# start_db_capturing()
-# con_test <- make_test_connection()
-# x <- BS_import_data_points("I1_1S", con_test, schema = "test_platform")
-# stop_db_capturing()
-#
+
+UMARimportR::delete_table(con, 560)
 start_db_capturing()
-con_test <- make_test_connection()
-result <- BS_import_structure("I2_4_4AS", con_test, schema = "platform")
-x <- BS_import_data_points("I2_4_4AS", con_test, schema = "platform")
+con <- make_test_connection()
+result <- BS_import_structure("I2_4_4AS", con, schema = "platform")
+x <- BS_import_data_points("I2_4_4AS", con, schema = "platform")
 stop_db_capturing()
 
-con_test <- make_test_connection()
-x <- BS_import_data_points("F2_Q1S", con_test, schema = "platform")
+idz <- UMARaccessR::sql_get_latest_vintages_for_table_id(560, con)$vintage_id
+invisible(UMARimportR::delete_vintage(con, idz))
+options(dittodb.debug = TRUE)
+dittodb::start_db_capturing()
+con <- make_test_connection()
+# just this one step in isolation
+vintages <- BSfetchR::prepare_vintage_table("I2_4_4AS", con, schema = "platform")
+UMARimportR::insert_new_vintage(con, vintages, schema = "platform")
+dittodb::stop_db_capturing()
 
-x <- prepare_bs_data_for_insert("F2_Q1S", con_test, schema = "platform")
-#
+
