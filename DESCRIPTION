@@ -36,7 +36,8 @@ Imports:
     tidyr,
     RPostgres,
     UMARimportR,
-    lubridate
+    lubridate,
+    withr
 Remotes:
     majazaloznik/SURSfetchR,
     majazaloznik/UMARaccessR,
