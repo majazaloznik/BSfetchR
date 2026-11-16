@@ -60,18 +60,18 @@ extract_second_level_tables <- function(url) {
 
   # Fetch HTML content with proper encoding
   response <- httr::GET(url)
-  html_content <- httr::content(response, "text", encoding = "UTF-8") %>%
+  html_content <- httr::content(response, "text", encoding = "UTF-8") |>
     xml2::read_html()
 
   # Extract parent category from breadcrumb
-  parent_name <- html_content %>%
-    rvest::html_nodes(".breadcrumb_text_nolink") %>%
-    rvest::html_text() %>%
-    tail(1) %>%
+  parent_name <- html_content |>
+    rvest::html_nodes(".breadcrumb_text_nolink") |>
+    rvest::html_text() |>
+    tail(1) |>
     trimws()
 
   # Extract table items from the page
-  table_items <- html_content %>%
+  table_items <- html_content |>
     rvest::html_nodes(".tablelist_li")
 
   # Initialize results dataframe
@@ -88,16 +88,16 @@ extract_second_level_tables <- function(url) {
   # Process each table item
   for (item in table_items) {
     # Extract table name
-    table_name_node <- item %>%
+    table_name_node <- item |>
       rvest::html_node(".tablelist_linkHeading")
 
     if (!is.na(table_name_node)) {
-      table_name <- table_name_node %>%
-        rvest::html_text() %>%
+      table_name <- table_name_node |>
+        rvest::html_text() |>
         trimws()
 
       # Extract select URL
-      select_url_node <- item %>%
+      select_url_node <- item |>
         rvest::html_node("a.tablelist_link[href*='select']")
 
       select_url <- if (!is.na(select_url_node)) {
@@ -124,8 +124,8 @@ extract_second_level_tables <- function(url) {
       }
 
       # Extract modified date
-      modified_date <- item %>%
-        rvest::html_text() %>%
+      modified_date <- item |>
+        rvest::html_text() |>
         stringr::str_extract("Spremenjeno:\\s*(\\d{1,2}\\.\\d{1,2}\\.\\d{4})")
 
       # Add to results

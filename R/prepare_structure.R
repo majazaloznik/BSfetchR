@@ -123,10 +123,10 @@ prepare_category_table_table <- function(px_code, con, schema = "platform") {
   tbl_id <- UMARaccessR::sql_get_table_id_from_table_code(con, px_code, schema)
   source_id <- UMARaccessR::sql_get_source_code_from_source_name(con, "BS", schema)
 
-  BSfetchR::full %>%
-    dplyr::filter(px_code == !!px_code) %>%
-    dplyr::select(category_id = id) %>%
-    dplyr::distinct() %>%
+  BSfetchR::full |>
+    dplyr::filter(px_code == !!px_code) |>
+    dplyr::select(category_id = id) |>
+    dplyr::distinct() |>
     dplyr::mutate(table_id = !!tbl_id,
                   source_id = !!source_id)
 }
@@ -198,7 +198,7 @@ prepare_dimension_levels_table <- function(px_code, con, schema = "platform") {
 #' @export
 #'
 prepare_unit_table <- function(px_code) {
-  df <- data.frame(strsplit(get_px_metadata(px_code)$units, ", ")) %>%
+  df <- data.frame(strsplit(get_px_metadata(px_code)$units, ", ")) |>
     dplyr::mutate_all(tolower)
   names(df) <- "name"
   df
