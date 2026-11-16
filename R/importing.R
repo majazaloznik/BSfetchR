@@ -90,12 +90,13 @@ BS_import_structure <- function(px_code, con, schema = "platform", all_levels = 
 }
 
 
-
-#' Insert data points from BS
+#' Prepare and insert BS data points
 #'
-#' Function to prepare and insert BS data points. The function first prepares
-#' the required vintages and inserts them, then prepares the data points
-#' table and inserts it. The function returns the results invisibly.
+#' Prepares and inserts the vintages, then the data points, for one table.
+#' "Nothing new" is not an error: it returns zero counts. Any other failure
+#' is raised, so callers can't mistake it for "nothing new". If the data
+#' import fails after vintages were inserted, the empty vintages are removed
+#' first, otherwise the next run would see "not new" and never retry.
 #'
 #' This is a BS specific function, which should be followed by the generic
 #' UMARimportR function to write the vintage hashes and clean up redundant
@@ -105,38 +106,31 @@ BS_import_structure <- function(px_code, con, schema = "platform", all_levels = 
 #' @param con Database connection
 #' @param schema Schema name
 #'
-#' @return Insertion results (invisibly)
+#' @return list(new_vintages, new_datapoints) (invisibly), both zero if
+#'   there was nothing new.
 #' @export
 BS_import_data_points <- function(px_code, con, schema = "platform") {
   message("Importing data points from: ", px_code, " into schema ", schema)
-  result <- list()
 
-  vintage_result <- tryCatch(
-    expr = list(vintages = prepare_vintage_table(px_code, con, schema), error = NULL),
-    error = function(e) {
-      error_msg <- conditionMessage(e)
-      message("Note: ", error_msg)
-      list(vintages = NULL, error = error_msg)
+  vintages <- tryCatch(
+    prepare_vintage_table(px_code, con, schema),
+    bs_not_new = function(e) {
+      message("No new data for ", px_code)
+      NULL
     })
-  result$vintage_error <- vintage_result$error
+  if (is.null(vintages)) return(invisible(list(new_vintages = 0L, new_datapoints = 0L)))
 
-  if (!is.null(vintage_result$vintages)) {
-    result$vintages <- UMARimportR::insert_new_vintage(con, vintage_result$vintages, schema)
+  new_vintages <- sum(UMARimportR::insert_new_vintage(con, vintages, schema)$count)
 
-    prep_result <- tryCatch(
-      expr = list(data = prepare_bs_data_for_insert(px_code, con, schema), error = NULL),
-      error = function(e) list(data = NULL, error = conditionMessage(e))
-    )
-    result$data_error <- prep_result$error
+  inserted <- tryCatch({
+    prep <- prepare_bs_data_for_insert(px_code, con, schema)
+    UMARimportR::insert_prepared_data_points(prep, con, schema)
+  }, error = function(e) {
+    UMARimportR::remove_empty_vintages(con, schema)
+    stop(sprintf("%s: data import failed (%s); empty vintages removed",
+                 px_code, conditionMessage(e)), call. = FALSE)
+  })
 
-    if (!is.null(prep_result$data)) {
-      result$data <- UMARimportR::insert_prepared_data_points(prep_result$data, con, schema)
-    } else {
-      message("Skipping data import for ", px_code, ": ", prep_result$error)
-    }
-  } else {
-    message("Skipping import for ", px_code, " due to vintage preparation issue: ", vintage_result$error)
-  }
-
-  invisible(result)
+  invisible(list(new_vintages = new_vintages,
+                 new_datapoints = inserted$datapoints_inserted))
 }

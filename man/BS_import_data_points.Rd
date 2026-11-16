@@ -2,7 +2,7 @@
 % Please edit documentation in R/importing.R
 \name{BS_import_data_points}
 \alias{BS_import_data_points}
-\title{Insert data points from BS}
+\title{Prepare and insert BS data points}
 \usage{
 BS_import_data_points(px_code, con, schema = "platform")
 }
@@ -14,12 +14,15 @@ BS_import_data_points(px_code, con, schema = "platform")
 \item{schema}{Schema name}
 }
 \value{
-Insertion results (invisibly)
+list(new_vintages, new_datapoints) (invisibly), both zero if
+  there was nothing new.
 }
 \description{
-Function to prepare and insert BS data points. The function first prepares
-the required vintages and inserts them, then prepares the data points
-table and inserts it. The function returns the results invisibly.
+Prepares and inserts the vintages, then the data points, for one table.
+"Nothing new" is not an error: it returns zero counts. Any other failure
+is raised, so callers can't mistake it for "nothing new". If the data
+import fails after vintages were inserted, the empty vintages are removed
+first, otherwise the next run would see "not new" and never retry.
 }
 \details{
 This is a BS specific function, which should be followed by the generic

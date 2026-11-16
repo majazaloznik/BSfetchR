@@ -1,15 +1,14 @@
 Package: BSfetchR
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0.9000
+Title: Parse, Transform & Import BS Data into the UMAR Database
+Version: 0.1.1
 Authors@R: person(
     "Maja", "Zaloznik",
     role = c("aut", "cre"),
     email = "maja.zaloznik@gmail.com",
     comment = NULL
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Description: The goal of BSfetchR is to parse the BS public data, and prepare it for the UMAR data model.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -17,7 +16,6 @@ Suggests:
     dittodb,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-RoxygenNote: 7.3.3
 Depends: 
     R (>= 3.5)
 Imports: 
@@ -42,3 +40,4 @@ Remotes:
     majazaloznik/SURSfetchR,
     majazaloznik/UMARaccessR,
     majazaloznik/UMARimportR
+Config/roxygen2/version: 8.1.0

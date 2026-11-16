@@ -16,3 +16,12 @@ test_that("mock tests table prep without db access", {
     expect_true(all(x$data$flag == ""))
   })
 })
+test_that("prepare_vintage_table raises bs_not_new when publication date is unchanged", {
+  ts <- as.POSIXct("2026-01-15 10:00:00", tz = "UTC")
+  local_mocked_bindings(get_px_metadata = function(...) data.frame(updated = ts))
+  local_mocked_bindings(
+    sql_get_table_id_from_table_code = function(...) 1,
+    sql_get_last_publication_date_from_table_id = function(...) ts,
+    .package = "UMARaccessR")
+  expect_error(prepare_vintage_table("X", con = NULL), class = "bs_not_new")
+})

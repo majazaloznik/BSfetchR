@@ -86,8 +86,13 @@ withr::with_timezone("UTC", {
 })
 stop_db_capturing()
 
-# idz <- UMARaccessR::sql_get_latest_vintages_for_table_id(560, con)$vintage_id
-# invisible(UMARimportR::delete_vintage(con, idz))
-
-
+con <- make_test_connection()
+UMARimportR::delete_table(con, 564)   # remove I2_4_4AS from production_backup first
+start_db_capturing()
+con <- make_test_connection()
+withr::with_timezone("UTC", {
+  result <- BS_import_structure("I2_4_4AS", con, schema = "platform")
+  x <- BS_import_data_points("I2_4_4AS", con, schema = "platform")
+})
+stop_db_capturing()
 
